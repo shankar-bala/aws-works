@@ -94,6 +94,14 @@ new_account_roleARN="arn:aws:iam::{}:role/{}".format(new_account_id, defaultRole
 ## Assume the IAM role  of newly created account
 new_account_creds=switch_iam_role(aggr_session, RoleArn=new_account_roleARN, RoleSessionName=NEW_ACCOUNT_SESSION_NAME)
 
+## update group policy on base account to include new account id ##
+group_policy_resource_arn="arn:aws:iam::{}:role/Admins".format(new_account_id)
+group_policy['Statement']['Resource']=group_policy_resource_arn
+
+## update admin policy to include base account id #
+admins_policy_resource_urn="arn:aws:iam::{}:root".format(BASE_ACCT_ID)
+admins_policy['Statement']['Principal']['AWS']=admins_policy_resource_urn
+
 ## create admin role on new account
 if len(new_account_creds) == 3:     ## True , if role switched successfully
     new_acct_session=boto3.Session(aws_access_key_id=new_account_creds[0], aws_secret_access_key=new_account_creds[1], aws_session_token=new_account_creds[2])
@@ -104,14 +112,6 @@ if len(new_account_creds) == 3:     ## True , if role switched successfully
 ## set account alias for the new account
 
 new_acct_iam_client.create_account_alias(AccountAlias=NEW_ACCOUNT_ALIASNAME)
-
-## update group policy on base account to include new account id ##
-group_policy_resource_arn="arn:aws:iam::{}:role/Admins".format(new_account_id)
-group_policy['Statement']['Resource']=group_policy_resource_arn
-
-## update admin policy to include base account id #
-admins_policy_resource_urn="arn:aws:iam::{}:root".format(BASE_ACCT_ID)
-admins_policy['Statement']['Principal']['AWS']=admins_policy_resource_urn
 
 ## create group , attach policy and add users to the group under base account ##
 base_acct_iam_client=base_session.client('iam')
