@@ -8,7 +8,7 @@ BASE_ACCT_ACCESS_KEY=""  ## enter base account  aws access key ##
 BASE_ACCT_SECRET_KEY=""  ## enter base account aws secret key ##
 BASE_ACCT_ID="" ## base account id that has trust to the new account
 AGGR_ACCT_ID=""    ## AWS org account id under which new account gets created ##
-AGGR_ACCT_ROLE_ARN="arn:aws:iam::<AGGR_ACCT_ID>:role/Admins"   ## aggregate account role arn ##
+AGGR_ACCT_ROLE_ARN="arn:aws:iam::<aggr acct id>:role/Admins"   ## aggregate account role arn ##
 AGGR_ACCT_SESSION_NAME="aggr-acct-session"  ## aggregate account session name ##
 NEW_ACCOUNT_EMAIL=""     ## enter email contact for new aws account ex: 'abc+alias@xyz.com' " ##
 NEW_ACCOUNT_NAME=""      ## enter new aws account name ##
@@ -89,18 +89,18 @@ print("Sleeping for 30 secs to finish account creation process...")
 time.sleep(30)
 
 ## At this stage new account has been created under aws org account org ##
-new_account_roleARN="arn:aws:iam::{}:role/{}".format(new_account_id, defaultRoleName)
+new_account_roleARN="arn:aws:iam::{}:role/{}".format(str(new_account_id), defaultRoleName)
 
 ## Assume the IAM role  of newly created account
 new_account_creds=switch_iam_role(aggr_session, RoleArn=new_account_roleARN, RoleSessionName=NEW_ACCOUNT_SESSION_NAME)
 
 ## update group policy on base account to include new account id ##
-group_policy_resource_arn="arn:aws:iam::{}:role/Admins".format(new_account_id)
+group_policy_resource_arn="arn:aws:iam::{}:role/Admins".format(str(new_account_id))
 group_policy['Statement']['Resource']=group_policy_resource_arn
 
 ## update admin policy to include base account id #
-admins_policy_resource_urn="arn:aws:iam::{}:root".format(BASE_ACCT_ID)
-admins_policy['Statement']['Principal']['AWS']=admins_policy_resource_urn
+admins_policy_resource_urn="arn:aws:iam::{}:root".format(str(BASE_ACCT_ID))
+admins_policy['Statement'][0]['Principal']['AWS']=admins_policy_resource_urn
 
 ## create admin role on new account
 if len(new_account_creds) == 3:     ## True , if role switched successfully
