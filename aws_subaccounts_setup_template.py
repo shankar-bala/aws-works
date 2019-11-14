@@ -15,7 +15,7 @@ NEW_ACCOUNT_NAME=""      ## enter new aws account name ##
 NEW_ACCOUNT_ALIASNAME=""  ## enter new aws account alias name ex: 'autotesting' ###
 defaultRoleName="OrganizationAccountAccessRole"    ## default org role name..dont change this ##
 NEW_ACCOUNT_GROUP_NAME=""   ## enter group name that allow users to switch to new account ##
-NEW_ACCOUNT_USER_LIST=[""]  ## enter list of comma separated usernames that gets added to the above group ##
+NEW_ACCOUNT_USER_LIST=[""]  ## enter list of comma separated usernames that gets added to the above group..MAKE SURE USER IS NOT ALREADY PART OF MORE THAN 10 GROUPS ##
 NEW_ACCOUNT_SESSION_NAME="new-acct-session"  ## new account session name ##
 NEW_GROUP_POLICY_NAME=""  ## enter new group policy name ex: '<new accountname>-assume-role-admins-allow' ###
 
